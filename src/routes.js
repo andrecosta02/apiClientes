@@ -6,8 +6,8 @@ const converter = new showdown.Converter();
 const clientController = require("./controllers/clientController")
 
 router.get("/list", clientController.listAll)
-router.get("/list/:idClient", clientController.listOne)
-// router.post("/register", clientController.register)
+router.get("/listOne", clientController.listOne)
+router.post("/register", clientController.register)
 // router.put("/update:idClient", clientController.update)
 // router.delete("delete/:idClient", clientController.delete)
 
@@ -25,7 +25,6 @@ router.get('/', (req, res) => {
       res.status(500).send('Erro ao ler o arquivo Markdown.');
       return;
     }
-
 
     // Converta o Markdown em HTML usando o showdown.
     const html = converter.makeHtml(data);
