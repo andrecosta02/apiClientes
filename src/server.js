@@ -26,6 +26,8 @@ request('https://api64.ipify.org?format=json', (error, response, body) => {
     startServer()
   } else {
     console.error('Erro ao obter o endereço IP público:', error);
+    publicIP = undefined
+    startServer()
   }
 });
 
