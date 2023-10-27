@@ -11,7 +11,7 @@ module.exports = {
         let client = await clientService.listAll()
         
         for(let i in client) {
-            res.statusCode = 201
+            res.statusCode = 200
 
             json.client.push({
                 clientId: client[i].client_id,
@@ -32,9 +32,20 @@ module.exports = {
     listOne: async (req, res) => {
         let json = {statusCode:"", message:"", result:[]}
 
-        let idClient = req.query.idClient
+        let clientId = req.params.clientId
+        let client = await clientService.listOne(clientId)
+
+        if(client) { json.result = client }
+
+        res.json(json)
+    },
+
+    filter: async (req, res) => {
+        let json = {statusCode:"", message:"", result:[]}
+
+        let clientId = req.query.clientId
         let clientName = req.query.clientName
-        let client = await clientService.listOne(idClient, clientName)
+        let client = await clientService.filter(clientId, clientName)
 
 
         if(client) {
@@ -84,12 +95,15 @@ module.exports = {
 
         res.json(json)
         console.log(req.connection.remoteAddress + "} \n")
-
     },
 
     update: async (req, res) => {
 
-    }
+    },
+
+    delete: async (req, res) => {
+
+    },
 
 }
 

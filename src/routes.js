@@ -6,10 +6,12 @@ const converter = new showdown.Converter();
 const clientController = require("./controllers/clientController")
 
 router.get("/list", clientController.listAll)
-router.get("/listOne", clientController.listOne)
+router.get("/list/:clientId", clientController.listOne)
+router.get("/filter/", clientController.filter)
 router.post("/register", clientController.register)
-// router.put("/update:idClient", clientController.update)
-// router.delete("delete/:idClient", clientController.delete)
+router.put("/update:idClient", clientController.update)
+router.delete("delete/:idClient", clientController.delete)
+
 
 // router.get('/', (req, res) => {
 //     // Envie o arquivo HTML quando alguém acessar a rota /clients.
@@ -17,7 +19,6 @@ router.post("/register", clientController.register)
 //   })
 
 router.get('/', (req, res) => {
-  // Leia o arquivo Markdown (readme.md) e o converta em HTML.
   const fs = require('fs');
   const file = "/../README.md"
   fs.readFile(__dirname + file, 'utf8', (err, data) => {
@@ -26,10 +27,7 @@ router.get('/', (req, res) => {
       return;
     }
 
-    // Converta o Markdown em HTML usando o showdown.
     const html = converter.makeHtml(data);
-
-    // Envie o HTML resultante como resposta.
     res.send(html);
   });
 });

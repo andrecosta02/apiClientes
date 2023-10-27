@@ -16,25 +16,37 @@ module.exports = {
                 aceito(results)
             })
             console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
-            console.log(query)
-    
+            console.log(query)    
         })
     },
 
-    listOne: (idClient, clientName) => {
+    listOne: (clientId) => {
         return new Promise((aceito, rejeitado) => {
-            query = `SELECT * FROM client WHERE`
-            if(idClient){query += ` client_id = "${idClient}"`}
-            if(clientName){query += ` or name = "${clientName}"`}
+            query = `SELECT * FROM client WHERE client_id = ${clientId}`
 
-            // db.query(query, (error, results) => {
-            //     if(error){ rejeitado(error); return}
-            //     if(results.length > 0) {
-            //         aceito(results[0])
-            //     } else {
-            //         aceito(false)
-            //     }
-            // })
+            db.query(query, (error, results)=>{
+                if(error) { rejeitado(error); return; }
+                if(results.length > 0){ //vai verificar se retornou mais de 1 e pegar o 1
+                    aceito(results[0]);
+                }else {
+                    aceito(false);
+                }
+            })
+            
+            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
+            console.log(query)
+
+        })
+    },
+
+    filter: (clientId, clientName) => {
+        return new Promise((aceito, rejeitado) => {
+            query = `SELECT * FROM client`
+            if(clientId || clientName){query += ` WHERE`}
+            if(clientId){query += ` client_id = "${clientId}"`}
+            if(clientId && clientName){query += ` OR`}
+            if(clientName){query += ` name LIKE "%${clientName}%"`}
+
 
             db.query(query, (error, results)=>{
                 if(error) {rejeitado(error); return}
@@ -58,6 +70,10 @@ module.exports = {
             console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
             console.log(query)
         })
+    },
+
+    delete: (clientId) =>{
+
     }
     
         // clientId: client[i].client_id,
