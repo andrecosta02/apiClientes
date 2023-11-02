@@ -72,8 +72,21 @@ module.exports = {
         })
     },
 
-    delete: (clientId) =>{
+    update: (clientName, clientEmail, clientAddress, clientCpf, clientDate) => {
 
+    },
+
+    delete: (clientId) =>{
+        return new Promise((aceito, rejeitado) => {
+            query = `DELETE FROM client WHERE client_id = ${clientId}`
+
+            db.query(query,(error, results) => {
+                if(error) { rejeitado(error); return; }
+                aceito(results)
+            })
+            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
+            console.log(query)
+        })
     }
     
         // clientId: client[i].client_id,

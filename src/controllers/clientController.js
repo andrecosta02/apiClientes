@@ -7,13 +7,13 @@ module.exports = {
 
     listAll: async (req, res) => {
         let qtdClients = 0
-        let json = {statusCode:"", message:"", qtdTotal:"", client:[]}
+        let json = {statusCode:"", message:"", qtdTotal:"", result:[]}
         let client = await clientService.listAll()
         
         for(let i in client) {
             res.statusCode = 200
 
-            json.client.push({
+            json.result.push({
                 clientId: client[i].client_id,
                 clientName: client[i].name,
                 clientEmail: client[i].email,
@@ -68,7 +68,7 @@ module.exports = {
     // clientDate: client[i].creation_date
 
     register: async (req, res) => {
-        let json = {statusCode:"", message:"", client:[]}
+        let json = {statusCode:"", message:"", result:[]}
 
         let name = req.body.clientName
         let email = req.body.clientEmail
@@ -80,7 +80,7 @@ module.exports = {
             res.statusCode = 201
 
             let clientId = await clientService.register(name, email, address, cpf, creationDate)
-            json.client = {
+            json.result = {
                 clientId: clientId,
                 clientName: name,
                 clientEmail: email,
@@ -102,7 +102,16 @@ module.exports = {
     },
 
     delete: async (req, res) => {
+        let json = {error:'', result:{}};
 
+        let clientId = req.params.clientId;
+
+        await clientService.delete(clientId);
+        // json.result = {
+        //     clientId
+        // }
+
+        res.json(json);
     },
 
 }

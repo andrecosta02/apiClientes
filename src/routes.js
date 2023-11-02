@@ -9,8 +9,8 @@ router.get("/list", clientController.listAll)
 router.get("/list/:clientId", clientController.listOne)
 router.get("/filter/", clientController.filter)
 router.post("/register", clientController.register)
-router.put("/update:idClient", clientController.update)
-router.delete("delete/:idClient", clientController.delete)
+router.put("/update:clientId", clientController.update)
+router.delete("/delete/:clientId", clientController.delete)
 
 
 // router.get('/', (req, res) => {
