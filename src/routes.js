@@ -9,7 +9,7 @@ router.get("/list", clientController.listAll)
 router.get("/list/:clientId", clientController.listOne)
 router.get("/filter/", clientController.filter)
 router.post("/register", clientController.register)
-router.put("/update:clientId", clientController.update)
+router.put("/update/:clientId", clientController.update)
 router.delete("/delete/:clientId", clientController.delete)
 
 
@@ -26,6 +26,7 @@ router.get('/', (req, res) => {
       res.status(500).send('Erro ao ler o arquivo Markdown.');
       return;
     }
+
 
     const html = converter.makeHtml(data);
     res.send(html);

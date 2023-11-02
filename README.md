@@ -1,26 +1,32 @@
 # DOCUMENTAÇÃO DO PROJETO #
 
-## Para criar o Projeto Node (Apenas se for começar do zero, se for utilizar esse projeto, só baixar e dar ***"npm install"***, para baixar as dependências):
+## 1. Para criar o Projeto Node:
 
+1.1.:
+***
     npm ini -y 
 ***
+1.2.:
+***
     npm install express mysql dotenv cors body-parser showdown request
+
+1.3.:
 ***
     npm install nodemon --save--dev
 
 
-Adicionar no script do package.json o start abaixo para o Nodemon funcionar apenas com ***"npm start"***:
+1.4. Adicionar no script do package.json o start abaixo para o Nodemon funcionar apenas com ***"npm start"***:
 
     "scripts": {
         "start": "nodemon ./src/server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
 
-Para iniciar o Projeto:
+1.5. Para iniciar o Projeto:
 
     npm start
 
-## (DDL) Criação do Banco de Dados MySQL (Executar uma query por vez): ###
+## 2. (DDL) Criação do Banco de Dados MySQL: ###
 
     create database dbApiClient
 ***
@@ -40,7 +46,7 @@ Para iniciar o Projeto:
 
 
 
-## Arquitetura de pastas do Projeto: ##
+## 3. Arquitetura de pastas do Projeto: ##
 ```
    api
     │   node_modules                    `Pasta onde ficam os arquivos de instalação do Node`
@@ -65,11 +71,12 @@ Para iniciar o Projeto:
 
 
 
-## Rotas REST ##
-### Inserir a rota logo após http://localhost:8080/ROTA
+## 4. Rotas REST ##
+### Inserir a rota logo após http://localhost:8080/
 ```
     get:        /client/list
     get one:    /client/list/:idClient
+    get filter  /client/filter
     post:       /client/register
     put:        /client/update:idClient
     delete:     /client/delete:idClient
