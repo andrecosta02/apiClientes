@@ -31,7 +31,6 @@ request('https://api64.ipify.org?format=json', (error, response, body) => {
   }
 });
 
-
 function startServer(){
 server.listen(process.env.PORT, () => {
 

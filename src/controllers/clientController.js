@@ -5,9 +5,11 @@ const fullDate = `${date.getFullYear()}${(date.getMonth() + 1).toString().padSta
 
 module.exports = {
 
+
+
     listAll: async (req, res) => {
-        let qtdClients = 0
-        let json = {statusCode:"", message:"", qtdTotal:"", result:[]}
+        let amount = 0
+        let json = {statusCode:"", message:"", amount:"", result:[]}
         let client = await clientService.listAll()
         
         for(let i in client) {
@@ -21,13 +23,15 @@ module.exports = {
                 clientCpf: client[i].cpf,
                 clientDate: client[i].creation_date
             })
-            qtdClients++
+            amount++
         }
-        json.qtdTotal = qtdClients
+        json.amount = amount
         res.json(json)
         console.log(req.connection.remoteAddress + "} \n")
 
     },
+
+
 
     listOne: async (req, res) => {
         let json = {statusCode:"", message:"", result:[]}
@@ -35,10 +39,21 @@ module.exports = {
         let clientId = req.params.clientId
         let client = await clientService.listOne(clientId)
 
-        if(client) { json.result = client }
+        if(client) { 
+            json.result.push({
+                clientId: client.client_id,
+                clientName: client.name,
+                clientEmail: client.email,
+                clientAddress: client.address,
+                clientCpf: client.cpf,
+                clientDate: client.creation_date
+            })
+         }
 
         res.json(json)
     },
+
+
 
     filter: async (req, res) => {
         let json = {statusCode:"", message:"", result:[]}
@@ -60,12 +75,7 @@ module.exports = {
 
     },
 
-    // clientId: client[i].client_id,
-    // clientName: client[i].name,
-    // clientEmail: client[i].email,
-    // clientAddress: client[i].address,
-    // clientCpf: client[i].cpf,
-    // clientDate: client[i].creation_date
+
 
     register: async (req, res) => {
         let json = {statusCode:"", message:"", result:[]}
@@ -97,12 +107,37 @@ module.exports = {
         console.log(req.connection.remoteAddress + "} \n")
     },
 
-    update: async (req, res) => {
 
+
+    update: async (req, res) => {
+        let json = {statusCode:"", message:"", result:[]}
+
+        let clientId = req.params.clientId
+        let name = req.body.clientName
+        let email = req.body.clientEmail
+        let address = req.body.clientAddress
+
+        if(clientId && name || email || address){
+            await clientService.update(clientId, name, email, address);
+            json.result = {
+                clientId: clientId,
+                clientName: name,
+                clientEmail: email,
+                clientAddress: address,
+                clientCpf: address,
+                clientDate: creationDate
+            }
+        } else {
+            json.message = "Campos não enviados"
+        }
+
+        res.json(json);
     },
 
+
+
     delete: async (req, res) => {
-        let json = {error:'', result:{}};
+        let json = {statusCode:"", message:"", result:[]}
 
         let clientId = req.params.clientId;
 

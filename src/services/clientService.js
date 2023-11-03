@@ -7,6 +7,8 @@ const fullDate = `${date.getFullYear()}/${(date.getMonth() + 1).toString().padSt
 
 module.exports = {
 
+
+
     listAll: () => {
         return new Promise((aceito, rejeitado)=>{
             query = "SELECT * FROM client ORDER BY client_id"
@@ -19,6 +21,8 @@ module.exports = {
             console.log(query)    
         })
     },
+
+
 
     listOne: (clientId) => {
         return new Promise((aceito, rejeitado) => {
@@ -38,6 +42,8 @@ module.exports = {
 
         })
     },
+
+
 
     filter: (clientId, clientName) => {
         return new Promise((aceito, rejeitado) => {
@@ -59,6 +65,8 @@ module.exports = {
         })
     },
     
+
+
     register: (clientName, clientEmail, clientAddress, clientCpf, clientDate) => {
         return new Promise((aceito, rejeitado) => {
             query = `INSERT INTO client (name, email, address, cpf, creation_date) VALUES ("${clientName}", "${clientEmail}", "${clientAddress}", "${clientCpf}", "${clientDate}")`
@@ -72,9 +80,36 @@ module.exports = {
         })
     },
 
-    update: (clientName, clientEmail, clientAddress, clientCpf, clientDate) => {
 
+
+    update: (clientName, clientEmail, clientAddress) => {
+        return new Promise((aceito, rejeitado) => {
+            // query = `SELECT * FROM client`
+            // if(clientId || clientName){query += ` WHERE`}
+            // if(clientId){query += ` client_id = "${clientId}"`}
+            // if(clientId && clientName){query += ` OR`}
+            // if(clientName){query += ` name LIKE "%${clientName}%"`}
+            
+
+            //name, email, address
+            query = `UPDATE client SET `
+            if(clientId){query += `name="${clientId}" `}
+            if(clientId){query += `name="${clientId}" `}
+            if(clientId){query += `name="${clientId}" `}
+            query += `WHERE client_id = "${clientId}"`
+
+            db.query(query, (error, results)=>{
+                if(error) {rejeitado(error); return}
+                aceito(results)
+            })
+            
+            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
+            console.log(query)
+
+        })
     },
+
+
 
     delete: (clientId) =>{
         return new Promise((aceito, rejeitado) => {
@@ -88,13 +123,6 @@ module.exports = {
             console.log(query)
         })
     }
-    
-        // clientId: client[i].client_id,
-        // clientName: client[i].name,
-        // clientEmail: client[i].email,
-        // clientAddress: client[i].address,
-        // clientCpf: client[i].cpf,
-        // clientDate: client[i].creation_date
     
     
     
