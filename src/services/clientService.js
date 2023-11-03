@@ -123,7 +123,8 @@ module.exports = {
 
 
 function consoleResult(query) {
-    console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
-    console.log(query)
+    console.log(`Consult {`)
+    console.log(` - ${fullDate} - ${hour}`)
+    console.log(` - ${query}`)
 
 }

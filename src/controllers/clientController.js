@@ -152,7 +152,7 @@ module.exports = {
 }
 
 function IpPublicQuery(req) { 
-    console.log(req.connection.remoteAddress + "} \n") 
-    console.log(req)
+    console.log(` - ${req.method}`)
+    console.log(` - ${req.connection.remoteAddress} } \n`) 
 }
 
