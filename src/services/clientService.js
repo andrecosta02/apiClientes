@@ -7,8 +7,6 @@ const fullDate = `${date.getFullYear()}/${(date.getMonth() + 1).toString().padSt
 
 module.exports = {
 
-
-
     listAll: () => {
         return new Promise((aceito, rejeitado)=>{
             query = "SELECT * FROM client ORDER BY client_id"
@@ -17,8 +15,8 @@ module.exports = {
                 if(error) {rejeitado(error); return}
                 aceito(results)
             })
-            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
-            console.log(query)    
+
+            consoleResult(query)
         })
     },
 
@@ -37,9 +35,7 @@ module.exports = {
                 }
             })
             
-            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
-            console.log(query)
-
+            consoleResult(query)
         })
     },
 
@@ -59,9 +55,7 @@ module.exports = {
                 aceito(results)
             })
             
-            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
-            console.log(query)
-
+            consoleResult(query)
         })
     },
     
@@ -75,8 +69,8 @@ module.exports = {
                 if(error) { rejeitado(error); return; }
                 aceito(results.insertCodigo)
             })
-            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
-            console.log(query)
+
+            consoleResult(query)
         })
     },
 
@@ -103,9 +97,7 @@ module.exports = {
                 aceito(results)
             })
             
-            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
-            console.log(query)
-
+            consoleResult(query)
         })
     },
 
@@ -119,11 +111,19 @@ module.exports = {
                 if(error) { rejeitado(error); return; }
                 aceito(results)
             })
-            console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
-            console.log(query)
+
+            consoleResult(query)
         })
-    }
+    },
     
+
+   
     
-    
+}
+
+
+function consoleResult(query) {
+    console.log(`Consulta Rest às ${hour} - ${fullDate} {`)
+    console.log(query)
+
 }

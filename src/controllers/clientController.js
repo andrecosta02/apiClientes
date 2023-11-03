@@ -5,8 +5,6 @@ const fullDate = `${date.getFullYear()}${(date.getMonth() + 1).toString().padSta
 
 module.exports = {
 
-
-
     listAll: async (req, res) => {
         let amount = 0
         let json = {statusCode:"", message:"", amount:"", result:[]}
@@ -26,9 +24,9 @@ module.exports = {
             amount++
         }
         json.amount = amount
-        res.json(json)
-        console.log(req.connection.remoteAddress + "} \n")
 
+        res.json(json)
+        IpPublicQuery(req)
     },
 
 
@@ -51,6 +49,7 @@ module.exports = {
          }
 
         res.json(json)
+        IpPublicQuery(req)
     },
 
 
@@ -71,8 +70,7 @@ module.exports = {
         }
 
         res.json(json)
-        console.log(req.connection.remoteAddress + "} \n")
-
+        IpPublicQuery(req)
     },
 
 
@@ -104,7 +102,7 @@ module.exports = {
         }
 
         res.json(json)
-        console.log(req.connection.remoteAddress + "} \n")
+        IpPublicQuery(req)
     },
 
 
@@ -131,7 +129,8 @@ module.exports = {
             json.message = "Campos não enviados"
         }
 
-        res.json(json);
+        res.json(json)
+        IpPublicQuery(req)
     },
 
 
@@ -146,14 +145,14 @@ module.exports = {
         //     clientId
         // }
 
-        res.json(json);
+        res.json(json)
+        IpPublicQuery(req)
     },
 
 }
 
-// {
-//     "clientName": "Andre teste",
-//     "clientEmail": "fhruhr@vih.com",
-//     "clientAddress": "Rua tralalala",
-//     "clientCpf": "18949"  
-// }
+function IpPublicQuery(req) { 
+    console.log(req.connection.remoteAddress + "} \n") 
+    console.log(req)
+}
+
