@@ -1,4 +1,5 @@
 const db = require("../db")
+const clientController = require("../controllers/clientController")
 let query = ""
 
 const date = new Date()
@@ -28,7 +29,7 @@ module.exports = {
 
             db.query(query, (error, results)=>{
                 if(error) { rejeitado(error); return; }
-                if(results.length > 0){ //vai verificar se retornou mais de 1 e pegar o 1
+                if(results.length > 0){
                     aceito(results[0]);
                 }else {
                     aceito(false);
@@ -105,14 +106,31 @@ module.exports = {
 
     delete: (clientId) =>{
         return new Promise((aceito, rejeitado) => {
-            query = `DELETE FROM client WHERE client_id = ${clientId}`
 
-            db.query(query,(error, results) => {
-                if(error) { rejeitado(error); return; }
+            let querySelect = `SELECT * FROM client WHERE client_id = ${clientId}`
+
+            db.query(querySelect,(error, results) => {
                 aceito(results)
+
+                if(results != 0){
+                    // console.log("Foram encontrados clientes com esse ID")
+                    query = `DELETE FROM client WHERE client_id = ${clientId}`
+
+                    db.query(query,(error, results) => {
+                        if(error) { rejeitado(error); return; }
+                        aceito(results)
+                    })
+
+                    messageJson = `Deleted client with client_id = ${clientId}`
+                    aceito(messageJson)
+                    consoleResult(query)
+                } else {
+                    messageJson = `No client found with client_id = ${clientId}`
+                    rejeitado(messageJson)
+                    consoleResult(messageJson)
+                }
             })
 
-            consoleResult(query)
         })
     },
     

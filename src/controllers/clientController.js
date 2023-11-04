@@ -61,7 +61,6 @@ module.exports = {
         let clientName = req.query.clientName
         let client = await clientService.filter(clientId, clientName)
 
-
         if(client) {
 
             json.result = client
@@ -122,7 +121,7 @@ module.exports = {
                 clientName: name,
                 clientEmail: email,
                 clientAddress: address,
-                clientCpf: address,
+                clientCpf: cpf,
                 clientDate: creationDate
             }
         } else {
@@ -137,17 +136,16 @@ module.exports = {
 
     delete: async (req, res) => {
         let json = {statusCode:"", message:"", result:[]}
-
         let clientId = req.params.clientId;
-
         await clientService.delete(clientId);
-        // json.result = {
-        //     clientId
-        // }
+        messageJson = messageJson
 
+        json.message = messageJson
+        
         res.json(json)
         IpPublicQuery(req)
     },
+
 
 }
 
