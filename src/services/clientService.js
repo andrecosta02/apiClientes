@@ -80,18 +80,18 @@ module.exports = {
 
     update: (clientName, clientEmail, clientAddress) => {
         return new Promise((resolve, reject) => {
-            // query = `SELECT * FROM client`
-            // if(clientId || clientName){query += ` WHERE`}
-            // if(clientId){query += ` client_id = "${clientId}"`}
-            // if(clientId && clientName){query += ` OR`}
-            // if(clientName){query += ` name LIKE "%${clientName}%"`}
-            
 
-            //name, email, address
             query = `UPDATE client SET `
-            if(clientId){query += `name="${clientId}" `}
-            if(clientId){query += `name="${clientId}" `}
-            if(clientId){query += `name="${clientId}" `}
+
+            if(clientName){query += `name="${clientName}" `}
+            if(clientName && clientEmail){query += `, `}
+            if(clientName && clientAddress){query += `, `}
+
+            if(clientEmail){query += `email="${clientEmail}" `}
+            if(clientEmail && clientAddress){query += `, `}
+
+            if(clientAddress){query += `address="${clientAddress}" `}
+
             query += `WHERE client_id = "${clientId}"`
 
             db.query(query, (error, results)=>{
@@ -114,7 +114,6 @@ module.exports = {
                 resolve(results)
 
                 if(results != 0){
-                    // console.log("Foram encontrados clientes com esse ID")
                     query = `DELETE FROM client WHERE client_id = ${clientId}`
 
                     db.query(query,(error, results) => {
