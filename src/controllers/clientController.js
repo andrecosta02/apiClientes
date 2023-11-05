@@ -87,12 +87,13 @@ module.exports = {
             res.statusCode = 201
 
             let clientId = await clientService.register(name, email, address, cpf, creationDate)
+            // console.log(insertCod)
             json.result = {
                 clientId: clientId,
                 clientName: name,
                 clientEmail: email,
                 clientAddress: address,
-                clientCpf: address,
+                clientCpf: cpf,
                 clientDate: creationDate
             }
 

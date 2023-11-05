@@ -9,12 +9,12 @@ const fullDate = `${date.getFullYear()}/${(date.getMonth() + 1).toString().padSt
 module.exports = {
 
     listAll: () => {
-        return new Promise((aceito, rejeitado)=>{
+        return new Promise((resolve, reject)=>{
             query = "SELECT * FROM client ORDER BY client_id"
 
             db.query(query, (error, results)=>{
-                if(error) {rejeitado(error); return}
-                aceito(results)
+                if(error) {reject(error); return}
+                resolve(results)
             })
 
             consoleResult(query)
@@ -24,15 +24,15 @@ module.exports = {
 
 
     listOne: (clientId) => {
-        return new Promise((aceito, rejeitado) => {
+        return new Promise((resolve, reject) => {
             query = `SELECT * FROM client WHERE client_id = ${clientId}`
 
             db.query(query, (error, results)=>{
-                if(error) { rejeitado(error); return; }
+                if(error) { reject(error); return; }
                 if(results.length > 0){
-                    aceito(results[0]);
+                    resolve(results[0]);
                 }else {
-                    aceito(false);
+                    resolve(false);
                 }
             })
             
@@ -43,7 +43,7 @@ module.exports = {
 
 
     filter: (clientId, clientName) => {
-        return new Promise((aceito, rejeitado) => {
+        return new Promise((resolve, reject) => {
             query = `SELECT * FROM client`
             if(clientId || clientName){query += ` WHERE`}
             if(clientId){query += ` client_id = "${clientId}"`}
@@ -52,8 +52,8 @@ module.exports = {
 
 
             db.query(query, (error, results)=>{
-                if(error) {rejeitado(error); return}
-                aceito(results)
+                if(error) {reject(error); return}
+                resolve(results)
             })
             
             consoleResult(query)
@@ -63,12 +63,13 @@ module.exports = {
 
 
     register: (clientName, clientEmail, clientAddress, clientCpf, clientDate) => {
-        return new Promise((aceito, rejeitado) => {
+        return new Promise((resolve, reject) => {
             query = `INSERT INTO client (name, email, address, cpf, creation_date) VALUES ("${clientName}", "${clientEmail}", "${clientAddress}", "${clientCpf}", "${clientDate}")`
             
             db.query(query,(error, results) => {
-                if(error) { rejeitado(error); return; }
-                aceito(results.insertCodigo)
+                if(error) { reject(error); return; }
+                console.log(results)
+                resolve(results.insertCod)
             })
 
             consoleResult(query)
@@ -78,7 +79,7 @@ module.exports = {
 
 
     update: (clientName, clientEmail, clientAddress) => {
-        return new Promise((aceito, rejeitado) => {
+        return new Promise((resolve, reject) => {
             // query = `SELECT * FROM client`
             // if(clientId || clientName){query += ` WHERE`}
             // if(clientId){query += ` client_id = "${clientId}"`}
@@ -94,8 +95,8 @@ module.exports = {
             query += `WHERE client_id = "${clientId}"`
 
             db.query(query, (error, results)=>{
-                if(error) {rejeitado(error); return}
-                aceito(results)
+                if(error) {reject(error); return}
+                resolve(results)
             })
             
             consoleResult(query)
@@ -105,28 +106,28 @@ module.exports = {
 
 
     delete: (clientId) =>{
-        return new Promise((aceito, rejeitado) => {
+        return new Promise((resolve, reject) => {
 
             let querySelect = `SELECT * FROM client WHERE client_id = ${clientId}`
 
             db.query(querySelect,(error, results) => {
-                aceito(results)
+                resolve(results)
 
                 if(results != 0){
                     // console.log("Foram encontrados clientes com esse ID")
                     query = `DELETE FROM client WHERE client_id = ${clientId}`
 
                     db.query(query,(error, results) => {
-                        if(error) { rejeitado(error); return; }
-                        aceito(results)
+                        if(error) { reject(error); return; }
+                        resolve(results)
                     })
 
                     messageJson = `Deleted client with client_id = ${clientId}`
-                    aceito(messageJson)
+                    resolve(messageJson)
                     consoleResult(query)
                 } else {
                     messageJson = `No client found with client_id = ${clientId}`
-                    rejeitado(messageJson)
+                    reject(messageJson)
                     consoleResult(messageJson)
                 }
             })
