@@ -1,9 +1,13 @@
 const express = require("express")
 const router = express.Router()
-const showdown = require('showdown');
+const showdown = require("showdown");
+// const bodyParser = require("body-parser");
+// const { body, validationResult } = require("express-validator");
+
 const converter = new showdown.Converter();
 
 const clientController = require("./controllers/clientController")
+
 
 router.get("/list", clientController.listAll)
 router.get("/list/:clientId", clientController.listOne)
@@ -13,17 +17,17 @@ router.put("/update/:clientId", clientController.update)
 router.delete("/delete/:clientId", clientController.delete)
 
 
-// router.get('/', (req, res) => {
+// router.get("/", (req, res) => {
 //     // Envie o arquivo HTML quando alguém acessar a rota /clients.
-//     res.sendFile(__dirname + '/index.html');
+//     res.sendFile(__dirname + "/index.html");
 //   })
 
-router.get('/', (req, res) => {
-  const fs = require('fs');
+router.get("/", (req, res) => {
+  const fs = require("fs");
   const file = "/../README.md"
-  fs.readFile(__dirname + file, 'utf8', (err, data) => {
+  fs.readFile(__dirname + file, "utf8", (err, data) => {
     if (err) {
-      res.status(500).send('Erro ao ler o arquivo Markdown.');
+      res.status(500).send("Erro ao ler o arquivo Markdown.");
       return;
     }
 

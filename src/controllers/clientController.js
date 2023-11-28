@@ -1,4 +1,6 @@
 const clientService = require("../services/clientService")
+const { validationResult } = require('express-validator');
+const { body, param } = require('express-validator');
 
 const date = new Date()
 const fullDate = `${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}`
@@ -72,37 +74,76 @@ module.exports = {
         IpPublicQuery(req)
     },
 
+    
+    
+    // register: async (req, res) => {
+    //     let json = {statusCode:"", message:"", result:[]}
 
+    //     let name = req.body.clientName
+    //     let email = req.body.clientEmail
+    //     let address = req.body.clientAddress
+    //     let cpf = req.body.clientCpf
+    //     let creationDate = fullDate
+
+    //     if(name && email && address && cpf) {
+    //         res.statusCode = 201
+
+    //         let clientId = await clientService.register(name, email, address, cpf, creationDate)
+    //         json.result = {
+    //             clientId: clientId,
+    //             clientName: name,
+    //             clientEmail: email,
+    //             clientAddress: address,
+    //             clientCpf: cpf,
+    //             clientDate: creationDate
+    //         }
+
+    //     } else {
+    //         json.message = "Campos não enviados"
+    //     }
+
+    //     res.json(json)
+    //     IpPublicQuery(req)
+    // },
 
     register: async (req, res) => {
-        let json = {statusCode:"", message:"", result:[]}
-
-        let name = req.body.clientName
-        let email = req.body.clientEmail
-        let address = req.body.clientAddress
-        let cpf = req.body.clientCpf
-        let creationDate = fullDate
-
-        if(name && email && address && cpf) {
-            res.statusCode = 201
-
-            let clientId = await clientService.register(name, email, address, cpf, creationDate)
-            // console.log(insertCod)
-            json.result = {
-                clientId: clientId,
-                clientName: name,
-                clientEmail: email,
-                clientAddress: address,
-                clientCpf: cpf,
-                clientDate: creationDate
-            }
-
-        } else {
-            json.message = "Campos não enviados"
+        const json = { statusCode: "", message: "", result: [] }
+    
+        const name = req.body.clientName;
+        const email = req.body.clientEmail;
+        const address = req.body.clientAddress;
+        const cpf = req.body.clientCpf;
+        const creationDate = fullDate;
+    
+        const registerValidation = [
+            body('clientName').notEmpty().withMessage('clientName não pode estar vazio').isString().withMessage('clientName deve ser uma string').isLength({ min: 3, max: 50 }).withMessage('clientName deve ter entre 3 e 50 caracteres'),
+            body('clientEmail').notEmpty().withMessage('clientEmail não pode estar vazio').isEmail().withMessage('clientEmail deve ser um endereço de e-mail válido'),
+            body('clientAddress').notEmpty().withMessage('clientAddress não pode estar vazio').isString().withMessage('clientAddress deve ser uma string'),
+            body('clientCpf').notEmpty().withMessage('clientCpf não pode estar vazio').isNumeric().isLength({ min: 11, max: 11 }).withMessage('clientCpf deve ter 11 dígitos'),
+        ];
+    
+        await Promise.all(registerValidation.map(validation => validation.run(req)));
+    
+        const errors = validationResult(req);
+    
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ statusCode: 400, message: 'Erro de validação', errors: errors.array() });
         }
-
-        res.json(json)
-        IpPublicQuery(req)
+    
+        res.statusCode = 201;
+    
+        const clientId = await clientService.register(name, email, address, cpf, creationDate);
+        json.result = {
+            clientId: clientId,
+            clientName: name,
+            clientEmail: email,
+            clientAddress: address,
+            clientCpf: cpf,
+            clientDate: creationDate
+        }
+    
+        res.json(json);
+        IpPublicQuery(req);
     },
 
 

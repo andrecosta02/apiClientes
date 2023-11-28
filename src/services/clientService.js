@@ -1,6 +1,7 @@
 const db = require("../db")
 const clientController = require("../controllers/clientController")
 let query = ""
+let values = ""
 
 const date = new Date()
 const hour = `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}h`
@@ -25,9 +26,10 @@ module.exports = {
 
     listOne: (clientId) => {
         return new Promise((resolve, reject) => {
-            query = `SELECT * FROM client WHERE client_id = ${clientId}`
+            query = `SELECT * FROM client WHERE client_id = ?`
+            values = [clientId]
 
-            db.query(query, (error, results)=>{
+            db.query(query, values, (error, results)=>{
                 if(error) { reject(error); return; }
                 if(results.length > 0){
                     resolve(results[0]);
@@ -36,7 +38,7 @@ module.exports = {
                 }
             })
             
-            consoleResult(query)
+            consoleResult(query, values)
         })
     },
 
@@ -47,9 +49,9 @@ module.exports = {
             query = `SELECT * FROM client`
             if(clientId || clientName){query += ` WHERE`}
             if(clientId){query += ` client_id = "${clientId}"`}
-            if(clientId && clientName){query += ` OR`}
+            if(clientId && clientName){query += ` AND`}
             if(clientName){query += ` name LIKE "%${clientName}%"`}
-
+            values
 
             db.query(query, (error, results)=>{
                 if(error) {reject(error); return}
@@ -64,15 +66,18 @@ module.exports = {
 
     register: (clientName, clientEmail, clientAddress, clientCpf, clientDate) => {
         return new Promise((resolve, reject) => {
-            query = `INSERT INTO client (name, email, address, cpf, creation_date) VALUES ("${clientName}", "${clientEmail}", "${clientAddress}", "${clientCpf}", "${clientDate}")`
+            // query = `INSERT INTO client (name, email, address, cpf, creation_date) VALUES ("${clientName}", "${clientEmail}", "${clientAddress}", "${clientCpf}", "${clientDate}")`
+            query = `INSERT INTO client (name, email, address, cpf, creation_date) VALUES (?, ?, ?, ?, ?)`
+            values = [clientName, clientEmail, clientAddress, clientCpf, clientDate]
             
-            db.query(query,(error, results) => {
+            db.query(query, values,(error, results) => {
                 if(error) { reject(error); return; }
-                console.log(results)
+                // console.log(results)
                 resolve(results.insertCod)
             })
 
             consoleResult(query)
+
         })
     },
 
@@ -108,12 +113,14 @@ module.exports = {
     delete: (clientId) =>{
         return new Promise((resolve, reject) => {
 
-            let querySelect = `SELECT * FROM client WHERE client_id = ${clientId}`
-
-            db.query(querySelect,(error, results) => {
+            // let querySelect = `SELECT * FROM client WHERE client_id = ${clientId}`
+            let querySelect = `SELECT * FROM client WHERE client_id = ?`
+            let values = [clientId]
+            db.query(querySelect, values ,(error, results) => {
                 resolve(results)
 
                 if(results != 0){
+                    // query = `DELETE FROM client WHERE client_id = ${clientId}`
                     query = `DELETE FROM client WHERE client_id = ${clientId}`
 
                     db.query(query,(error, results) => {
@@ -143,6 +150,6 @@ module.exports = {
 function consoleResult(query) {
     console.log(`Consult {`)
     console.log(` - ${fullDate} - ${hour}`)
-    console.log(` - ${query}`)
-
+    console.log(query, values)
+    
 }

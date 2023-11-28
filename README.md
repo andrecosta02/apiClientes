@@ -8,7 +8,7 @@
 ***
 1.2.:
 ***
-    npm install express mysql dotenv cors body-parser showdown request
+    npm install express mysql dotenv cors body-parser showdown request @hapi/joi
 
 1.3.:
 ***
