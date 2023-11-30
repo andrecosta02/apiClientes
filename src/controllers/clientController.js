@@ -74,39 +74,10 @@ module.exports = {
         IpPublicQuery(req)
     },
 
-    
-    
-    // register: async (req, res) => {
-    //     let json = {statusCode:"", message:"", result:[]}
-
-    //     let name = req.body.clientName
-    //     let email = req.body.clientEmail
-    //     let address = req.body.clientAddress
-    //     let cpf = req.body.clientCpf
-    //     let creationDate = fullDate
-
-    //     if(name && email && address && cpf) {
-    //         res.statusCode = 201
-
-    //         let clientId = await clientService.register(name, email, address, cpf, creationDate)
-    //         json.result = {
-    //             clientId: clientId,
-    //             clientName: name,
-    //             clientEmail: email,
-    //             clientAddress: address,
-    //             clientCpf: cpf,
-    //             clientDate: creationDate
-    //         }
-
-    //     } else {
-    //         json.message = "Campos não enviados"
-    //     }
-
-    //     res.json(json)
-    //     IpPublicQuery(req)
-    // },
 
     register: async (req, res) => {
+        let teste
+        let messageJson
         const json = { statusCode: "", message: "", result: [] }
     
         const name = req.body.clientName;
@@ -116,32 +87,39 @@ module.exports = {
         const creationDate = fullDate;
     
         const registerValidation = [
-            body('clientName').notEmpty().withMessage('clientName não pode estar vazio').isString().withMessage('clientName deve ser uma string').isLength({ min: 3, max: 50 }).withMessage('clientName deve ter entre 3 e 50 caracteres'),
-            body('clientEmail').notEmpty().withMessage('clientEmail não pode estar vazio').isEmail().withMessage('clientEmail deve ser um endereço de e-mail válido'),
-            body('clientAddress').notEmpty().withMessage('clientAddress não pode estar vazio').isString().withMessage('clientAddress deve ser uma string'),
-            body('clientCpf').notEmpty().withMessage('clientCpf não pode estar vazio').isNumeric().isLength({ min: 11, max: 11 }).withMessage('clientCpf deve ter 11 dígitos'),
+            body('clientName').notEmpty().withMessage('clientName cannot be empty').isString().withMessage('clientName must be a string').isLength({ min: 3, max: 60 }).withMessage('clientName must be between 3 and 60 characters'),
+            body('clientEmail').notEmpty().withMessage('clientEmail cannot be empty').isEmail().withMessage('clientEmail must be a valid email address').isLength({ min: 3, max: 60 }).withMessage('clientEmail must be between 3 and 60 characters'),
+            body('clientAddress').notEmpty().withMessage('clientAddress cannot be empty').isString().withMessage('clientAddress must be a string').isLength({ min: 3, max: 60 }).withMessage('clientAddress must be between 3 and 60 characters'),
+            body('clientCpf').notEmpty().withMessage('clientCpf cannot be empty').isString().withMessage('clientCpf must be a string').isLength({ min: 11, max: 11 }).withMessage('clientCpf must be 11 characters'),
         ];
     
-        await Promise.all(registerValidation.map(validation => validation.run(req)));
+        await Promise.all(registerValidation.map(validation => validation.run(req)))
     
-        const errors = validationResult(req);
+        const errors = validationResult(req)
     
         if (!errors.isEmpty()) {
-            return res.status(400).json({ statusCode: 400, message: 'Erro de validação', errors: errors.array() });
+            return res.status(422).json({ statusCode: 400, message: 'Erro de validação', errors: errors.array() })
         }
     
-        res.statusCode = 201;
-    
-        const clientId = await clientService.register(name, email, address, cpf, creationDate);
-        json.result = {
-            clientId: clientId,
-            clientName: name,
-            clientEmail: email,
-            clientAddress: address,
-            clientCpf: cpf,
-            clientDate: creationDate
+        const result = await clientService.register(name, email, address, cpf, creationDate)
+        messageJson = messageJson
+        if (typeof(result) === 'string') {
+            res.status(422)
+            json.statusCode = 422
+            json.message = result
+            json.result = ""
+
+        } else {
+            json.result = {
+                clientId: result,
+                clientName: name,
+                clientEmail: email,
+                clientAddress: address,
+                clientCpf: cpf,
+                clientDate: creationDate
+            }
         }
-    
+        
         res.json(json);
         IpPublicQuery(req);
     },
@@ -152,10 +130,25 @@ module.exports = {
         let json = {statusCode:"", message:"", result:[]}
 
         let clientId = req.params.clientId
-        let name = req.body.clientName
-        let email = req.body.clientEmail
-        let address = req.body.clientAddress
+        const name = req.body.clientName;
+        const email = req.body.clientEmail;
+        const address = req.body.clientAddress;
 
+        const registerValidation = [
+            body('clientName').isString().optional().withMessage('clientName cannot be empty').isLength({ min: 3, max: 60 }).withMessage('clientName must be between 3 and 60 characters'),
+            body('clientEmail').isEmail().optional().withMessage('clientEmail must be a valid email address').isLength({ min: 3, max: 60 }).withMessage('clientEmail must be between 3 and 60 characters'),
+            body('clientAddress').isString().optional().withMessage('clientAddress must be a string').isLength({ min: 3, max: 60 }).withMessage('clientAddress must be between 3 and 60 characters'),
+        ];
+    
+        await Promise.all(registerValidation.map(validation => validation.run(req)))
+    
+        const errors = validationResult(req)
+    
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ statusCode: 400, message: 'Erro de validação', errors: errors.array() })
+        }
+
+    
         if(clientId && name || email || address){
             await clientService.update(clientId, name, email, address);
             json.result = {
@@ -163,13 +156,12 @@ module.exports = {
                 clientName: name,
                 clientEmail: email,
                 clientAddress: address,
-                clientCpf: cpf,
-                clientDate: creationDate
             }
         } else {
             json.message = "Campos não enviados"
         }
 
+    
         res.json(json)
         IpPublicQuery(req)
     },
@@ -182,6 +174,7 @@ module.exports = {
         await clientService.delete(clientId);
         messageJson = messageJson
 
+        
         json.message = messageJson
         
         res.json(json)

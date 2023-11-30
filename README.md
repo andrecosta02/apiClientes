@@ -34,9 +34,9 @@
 ***
     create table client (
         client_id int primary key auto_increment,
-        name varchar(30),
-        email varchar(30),
-        address varchar(30),
+        name varchar(60),
+        email varchar(60),
+        address varchar(60),
         cpf varchar(11)
         creation_date date(8)
     )

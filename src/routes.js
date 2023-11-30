@@ -1,8 +1,6 @@
 const express = require("express")
 const router = express.Router()
 const showdown = require("showdown");
-// const bodyParser = require("body-parser");
-// const { body, validationResult } = require("express-validator");
 
 const converter = new showdown.Converter();
 
@@ -36,15 +34,5 @@ router.get("/", (req, res) => {
     res.send(html);
   });
 });
-
-
-
-/*
-get:        /client/list
-get one:    /client/list/:idClient
-post:       /client/register
-put:        /client/update:idClient
-delete:     /client/delete:idClient
-*/
 
 module.exports = router
